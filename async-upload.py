@@ -10,19 +10,14 @@ from requests_oauthlib import OAuth1
 MEDIA_ENDPOINT_URL = 'https://upload.twitter.com/1.1/media/upload.json'
 POST_TWEET_URL = 'https://api.twitter.com/1.1/statuses/update.json'
 
-CONSUMER_KEY = 'your-consumer-key'
-CONSUMER_SECRET = 'your-consumer-secret'
-ACCESS_TOKEN = 'your-access-token'
-ACCESS_TOKEN_SECRET = 'your-access-secret'
 
-VIDEO_FILENAME = 'path/to/video/file'
+VIDEO_FILENAME = 'ENTER FILE NAME'
 
 
-oauth = OAuth1(CONSUMER_KEY,
-  client_secret=CONSUMER_SECRET,
-  resource_owner_key=ACCESS_TOKEN,
-  resource_owner_secret=ACCESS_TOKEN_SECRET)
+auth = OAuth1('ENTER CREDENTIALS')
 
+
+x = requests.get('https://api.twitter.com/1.1/account/verify_credentials.json', auth=auth).json()
 
 class VideoTweet(object):
 
@@ -44,13 +39,13 @@ class VideoTweet(object):
 
     request_data = {
       'command': 'INIT',
-      'media_type': 'video/mp4',
+      'media_type': 'image/jpeg',
       'total_bytes': self.total_bytes,
-      'media_category': 'tweet_video'
+      'media_category': 'tweet_image'
     }
 
-    req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, auth=oauth)
-    media_id = req.json()['media_id']
+    req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, auth=auth).json()
+    media_id = req['media_id']
 
     self.media_id = media_id
 
@@ -80,7 +75,7 @@ class VideoTweet(object):
         'media':chunk
       }
 
-      req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, files=files, auth=oauth)
+      req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, files=files, auth=auth)
 
       if req.status_code < 200 or req.status_code > 299:
         print(req.status_code)
@@ -106,7 +101,7 @@ class VideoTweet(object):
       'media_id': self.media_id
     }
 
-    req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, auth=oauth)
+    req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, auth=auth)
     print(req.json())
 
     self.processing_info = req.json().get('processing_info', None)
@@ -142,7 +137,7 @@ class VideoTweet(object):
       'media_id': self.media_id
     }
 
-    req = requests.get(url=MEDIA_ENDPOINT_URL, params=request_params, auth=oauth)
+    req = requests.get(url=MEDIA_ENDPOINT_URL, params=request_params, auth=auth)
     
     self.processing_info = req.json().get('processing_info', None)
     self.check_status()
@@ -153,11 +148,11 @@ class VideoTweet(object):
     Publishes Tweet with attached video
     '''
     request_data = {
-      'status': 'I just uploaded a video with the @TwitterAPI.',
+      'status': 'I just uploaded a picture with the @TwitterAPI.',
       'media_ids': self.media_id
     }
 
-    req = requests.post(url=POST_TWEET_URL, data=request_data, auth=oauth)
+    req = requests.post(url=POST_TWEET_URL, data=request_data, auth=auth)
     print(req.json())
 
 
