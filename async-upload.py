@@ -85,7 +85,7 @@ class VideoTweet(object):
       segment_id = segment_id + 1
       bytes_sent = file.tell()
 
-      print('%s of %s bytes uploaded' % (str(bytes_sent), str(self.total_bytes)))
+      print('%s bytes uploaded' % (str(self.total_bytes)))
 
     print('Upload chunks complete.')
 
