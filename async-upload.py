@@ -5,16 +5,16 @@ import time
 import json
 import requests
 from requests_oauthlib import OAuth1
-
+from access import twitter_log
 
 MEDIA_ENDPOINT_URL = 'https://upload.twitter.com/1.1/media/upload.json'
 POST_TWEET_URL = 'https://api.twitter.com/1.1/statuses/update.json'
 
 
-VIDEO_FILENAME = 'ENTER FILE NAME'
+VIDEO_FILENAME = 'IMG_0884.jpg'
 
 
-auth = OAuth1('ENTER CREDENTIALS')
+auth = twitter_log()
 
 
 x = requests.get('https://api.twitter.com/1.1/account/verify_credentials.json', auth=auth).json()
@@ -147,8 +147,9 @@ class VideoTweet(object):
     '''
     Publishes Tweet with attached video
     '''
+    status = input('What do you want your tweet to say? ')
     request_data = {
-      'status': 'I just uploaded a picture with the @TwitterAPI.',
+      'status': status,
       'media_ids': self.media_id
     }
 
